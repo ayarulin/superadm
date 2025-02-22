@@ -1,3 +1,4 @@
+```go
 package core
 
 import (
@@ -30,3 +31,15 @@ func (a *YClientsApp) RegisterClient(extClientId ClientId, name ClientName) Clie
 		name:          name,
 	}
 }
+
+type VisitId string
+type VisitDate time.Time
+type ExtVisitId string
+
+type Visit struct {
+	id         VisitId
+	clientId   ClientId
+	extVisitId ExtVisitId
+	date       VisitDate
+}
+```
