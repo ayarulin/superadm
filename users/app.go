@@ -1,23 +1,41 @@
 package users
 
 import (
+	"context"
 	"superadmin.ru/users/internal"
 )
 
 type app struct {
-	*internal.Command
+	// db
+  command
 }
 
-func NewApp() *app {
-  _ = LoadConfig()
-
-	cmd := internal.NewCommand()
+func New() *app {
+	_ = LoadConfig()
 
 	return &app{
-    cmd,
-  }
+	 command{},
+	}
 }
 
 func (a *app) Close() {
-	// a.db.Close()
+	panic("not implemented")
+}
+
+type command struct {
+	usersRepo core.UsersRepo
+}
+
+type handlerFunc func(context.Context) (any, error)
+type executable interface {
+	Handler(*command) handlerFunc
+}
+
+func (c *command) Execute(ctx context.Context, e executable) (any, error){
+  return e.Handler(c)(ctx)
+}
+
+
+type Command[T, R any] interface {
+	Handle(T) (R, error)
 }

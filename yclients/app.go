@@ -11,7 +11,7 @@ type app struct {
 	*internal.Command
 }
 
-func NewApp() * app{
+func NewApp() *app{
   config := LoadConfig()
 
 	postgresDB := postgres.Open(config.DatabaseUrl)
