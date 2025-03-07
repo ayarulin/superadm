@@ -1,24 +1,23 @@
 package postgres
+// TODO: extract common logic to pkg/postgres
 
 import (
 	"database/sql"
-	"fmt"
+  "superadmin.ru/yclients/infrastructure/postgres/dao"
 	"log"
 
 	_ "github.com/lib/pq"
 )
 
 type PostgresDB struct { 
-  db *sql.DB
   ActiveIntegrations *activeIntegrations
+  closeFn func() error
 }
 
-func Open(host, dbname, user, password string, port int) *PostgresDB {
-  connInfo := fmt.Sprintf("host=%s port=%d user=%s "+
-    "password=%s dbname=%s sslmode=disable",
-    host, port, user, password, dbname)
+func Open(url string) *PostgresDB {
+  db, err := sql.Open("postgres", url)
 
-  db, err := sql.Open("postgres", connInfo)
+  queries := dao.New(db)
    
   if err == nil {
     err = db.Ping()
@@ -35,12 +34,12 @@ func Open(host, dbname, user, password string, port int) *PostgresDB {
   log.Println("Connected to the database!")
 
   return &PostgresDB{
-    db: db,
-    ActiveIntegrations: &activeIntegrations{db},
+    closeFn: db.Close,
+    ActiveIntegrations: &activeIntegrations{queries},
   }
 }
 
-func (p *PostgresDB) Close() {
-  p.db.Close()
+func (p *PostgresDB) Close() error {
+  return p.closeFn()
 }
 

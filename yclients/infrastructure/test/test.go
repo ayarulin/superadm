@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	. "superadmin.ru/yclients/internal/command/core"
+	. "superadmin.ru/yclients/internal/core"
 )
 
 type fakeApi struct{

@@ -12,9 +12,9 @@ func TestActivateIntegration(t *testing.T) {
 
 	ctx := context.Background()
 
-	intId, err := yclientsApp.Command.ActivateIntegration(ctx, "account#1", "extCompany#1")
+	intId, err := yclientsApp.Command.ActivateIntegration(ctx, 1, "extCompany#1")
 
-  if intId == "" || err != nil {
+  if intId == 0 || err != nil {
       t.Fatalf(`%v`, err)
   }
 }

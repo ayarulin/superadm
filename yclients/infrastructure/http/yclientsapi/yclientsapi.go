@@ -2,22 +2,27 @@ package yclientsapi
 
 import (
 	"context"
-	"superadmin.ru/yclients/internal/command/core"
+
+	"errors"
+	"superadmin.ru/yclients/internal/core"
 )
 
-type YClientsAPI struct{}
-
+type YClientsAPI struct {
+	apiKey string
+}
 
 func New(apiKey string) *YClientsAPI {
-	return &YClientsAPI{}
+	return &YClientsAPI{
+		apiKey,
+	}
 }
 
 // ConfirmRegistration implements core.YclientsService.
 func (y *YClientsAPI) ConfirmRegistration(context.Context, core.ExtCompanyId) error {
-	panic("unimplemented")
+	return nil
 }
 
 // GetCompany implements core.YclientsService.
 func (y *YClientsAPI) GetCompany(context.Context, core.ExtCompanyId) (core.CompanyName, error) {
-	panic("unimplemented")
+	return core.CompanyName(""), errors.New("service error")
 }

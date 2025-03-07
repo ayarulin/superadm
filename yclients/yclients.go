@@ -3,38 +3,32 @@ package yclients
 import (
 	"superadmin.ru/yclients/infrastructure/http/yclientsapi"
 	"superadmin.ru/yclients/infrastructure/postgres"
-	"superadmin.ru/yclients/internal/command"
+	"superadmin.ru/yclients/internal"
 )
 
-type yclientsApp struct {
+type app struct {
 	db *postgres.PostgresDB
-	*command.Command
+	*internal.Command
 }
 
-func NewApp() *yclientsApp {
+func NewApp() * app{
   config := LoadConfig()
 
-	postgresDB := postgres.Open(
-		config.PostgresHost,
-		config.PostgresDb,
-		config.PostgresUser,
-		config.PostgresPassword,
-		config.PostgresPort,
-	)
-
+	postgresDB := postgres.Open(config.DatabaseUrl)
 	yclientsapi := yclientsapi.New(config.APIKey)
 
-	cmd := command.NewCommand(
+	cmd := internal.NewCommand(
 		postgresDB.ActiveIntegrations,
 		yclientsapi,
 	)
 
-	return &yclientsApp{
+	return &app{
 		postgresDB,
 		cmd,
 	}
 }
 
-func (y *yclientsApp) Close() {
+
+func (y *app) Close() {
 	y.db.Close()
 }
