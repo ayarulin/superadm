@@ -5,6 +5,7 @@ import (
 	"time"
 )
 
+type ActiveIntegrationID int32
 type ActiveIntegration struct {
 	AccountId    AccountId
 	CompanyName  string

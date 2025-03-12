@@ -12,10 +12,10 @@ type app struct {
 }
 
 func NewApp() *app{
-  config := LoadConfig()
+  config := loadConfig()
 
-	postgresDB := postgres.Open(config.DatabaseUrl)
-	yclientsapi := yclientsapi.New(config.APIKey)
+	postgresDB := postgres.Open(config.YclientsDatabaseUrl)
+	yclientsapi := yclientsapi.New(config.YclientsUserToken)
 
 	cmd := internal.NewCommand(
 		postgresDB.ActiveIntegrations,

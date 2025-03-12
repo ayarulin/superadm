@@ -1,3 +1,5 @@
 package core
 
-type UsersRepo interface {}
+type UsersRepo interface {
+  GetUser(string) (string, error)
+}

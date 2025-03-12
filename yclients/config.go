@@ -3,13 +3,13 @@ package yclients
 import "superadmin.ru/pkg/envconfig"
 
 type config struct {
-	DatabaseUrl string
-	APIKey      string
+	YclientsDatabaseUrl string
+	YclientsUserToken   string
 }
 
-func LoadConfig() config {
+func loadConfig() config {
 	config := config{}
-	envconfig.Load("YCLIENTS", &config)
+	envconfig.Load(&config)
 
 	return config
 }

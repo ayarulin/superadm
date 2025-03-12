@@ -2,40 +2,51 @@ package users
 
 import (
 	"context"
+
+	"superadmin.ru/pkg/envconfig"
+	"superadmin.ru/users/service"
+
 	"superadmin.ru/users/internal"
 )
 
 type app struct {
-	// db
-  command
+	config struct {
+		YclientsUserToken string
+		JwtSecret         string
+	}
+	commandIO      *core.CommandIO
+	infrastructure struct{}
+	services       struct {
+		*service.JwtCoder
+		*service.YcSignValidator
+	}
 }
 
 func New() *app {
-	_ = LoadConfig()
+	app := app{}
 
-	return &app{
-	 command{},
-	}
+	envconfig.Load(&app.config)
+
+	// app.commandIO = &core.CommandIO{
+	// 	UsersRepo:             nil,
+	// 	YclientsSignValidator: ycsignvalidator.New(app.config.YclientsUserToken),
+	// 	// JwtCoder:              jwtcoder.New(config.JwtSecret),
+	// }
+
+	app.services.JwtCoder = service.NewJwtCoder(app.config.JwtSecret)
+	app.services.YcSignValidator = service.NewYcSignValidator(app.config.YclientsUserToken)
+
+	return &app
 }
 
 func (a *app) Close() {
 	panic("not implemented")
 }
 
-type command struct {
-	usersRepo core.UsersRepo
-}
-
-type handlerFunc func(context.Context) (any, error)
 type executable interface {
-	Handler(*command) handlerFunc
+	exec(*core.CommandIO, context.Context) error
 }
 
-func (c *command) Execute(ctx context.Context, e executable) (any, error){
-  return e.Handler(c)(ctx)
-}
-
-
-type Command[T, R any] interface {
-	Handle(T) (R, error)
+func (a *app) Command(ctx context.Context, feat executable) error {
+	return feat.exec(a.commandIO, ctx)
 }
