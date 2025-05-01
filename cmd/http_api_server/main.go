@@ -4,10 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"superadmin.ru/yclients"
+	"superadmin.ru/users"
 )
-
-
 
 func main() {
 	http.HandleFunc("/hello", hello)
@@ -17,11 +15,21 @@ func main() {
 }
 
 func hello(w http.ResponseWriter, req *http.Request) {
-	ycliensApp := yclients.NewApp()
+	usersApp := users.New()
+	defer usersApp.Close()
 
-  _, _ = ycliensApp.ActivateIntegration(req.Context(), 1, "extCompId")
+	err := usersApp.Run(req.Context(),
+		&users.YclientsRegistrationInitCmd{
+			ExtCompanyId: "",
+			Name:         "",
+			CompanyName:  "",
+			Email:        "",
+			PhoneNumber:  "",
+			UnsignedJSON: "",
+			Sign:         "",
+		})
 
-	fmt.Fprintf(w, "hello\n")
+	fmt.Fprintf(w, "result: %v \n", err)
 }
 
 func headers(w http.ResponseWriter, req *http.Request) {

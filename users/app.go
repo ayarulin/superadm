@@ -4,49 +4,42 @@ import (
 	"context"
 
 	"superadmin.ru/pkg/envconfig"
-	"superadmin.ru/users/service"
-
 	"superadmin.ru/users/internal"
+	"superadmin.ru/users/internal/core"
 )
 
-type app struct {
+type app struct{ *ioc }
+
+type ioc struct {
 	config struct {
-		YclientsUserToken string
 		JwtSecret         string
+		YclientsUserToken string
 	}
-	commandIO      *core.CommandIO
-	infrastructure struct{}
-	services       struct {
-		*service.JwtCoder
-		*service.YcSignValidator
-	}
+
+	usersRepo             core.UsersRepo
+	jwtcoder              *application.JwtCoder
+	yclientsSignValidator *application.YcSignValidator
+}
+
+type feature interface {
+	call(*ioc, context.Context) error
 }
 
 func New() *app {
-	app := app{}
+	ioc := ioc{}
 
-	envconfig.Load(&app.config)
+	envconfig.Load(&ioc.config)
 
-	// app.commandIO = &core.CommandIO{
-	// 	UsersRepo:             nil,
-	// 	YclientsSignValidator: ycsignvalidator.New(app.config.YclientsUserToken),
-	// 	// JwtCoder:              jwtcoder.New(config.JwtSecret),
-	// }
+	ioc.jwtcoder = application.NewJwtCoder(ioc.config.JwtSecret)
+	ioc.yclientsSignValidator = application.NewYcSignValidator(ioc.config.YclientsUserToken)
 
-	app.services.JwtCoder = service.NewJwtCoder(app.config.JwtSecret)
-	app.services.YcSignValidator = service.NewYcSignValidator(app.config.YclientsUserToken)
-
-	return &app
+	return &app{&ioc}
 }
 
 func (a *app) Close() {
 	panic("not implemented")
 }
 
-type executable interface {
-	exec(*core.CommandIO, context.Context) error
-}
-
-func (a *app) Command(ctx context.Context, feat executable) error {
-	return feat.exec(a.commandIO, ctx)
+func (a *app) Run(ctx context.Context, feat feature) error {
+	return feat.call(a.ioc, ctx)
 }

@@ -34,4 +34,3 @@ func NewYclientsRegistration(
 	return &model, nil
 }
 
-// func(r *YclientsRegistration) BuildToken

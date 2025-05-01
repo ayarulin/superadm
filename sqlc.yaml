@@ -1,10 +1,10 @@
 version: "2"
 sql:
-  - name: "yclients"
+  - name: "superadmin"
     engine: "postgresql"
-    schema: "yclients/infrastructure/postgres/db/migrations/"
-    queries: "yclients/infrastructure/postgres/db/queries/"
+    schema: "infrastructure/postgres/db/migrations/"
+    queries: infrastructure/postgres/db/queries/"
     gen:
       go:
         package: "dao"
-        out: "yclients/infrastructure/postgres/dao"
+        out: "infrastructure/postgres/dao"
