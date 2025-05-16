@@ -4,10 +4,12 @@ import (
 	"fmt"
 	"net/http"
 
-	"superadmin.ru/users"
+	"superadmin.ru/app/users"
+	"superadmin.ru/infrastructure/eventbus"
 )
 
 func main() {
+
 	http.HandleFunc("/hello", hello)
 	http.HandleFunc("/headers", headers)
 
@@ -15,19 +17,24 @@ func main() {
 }
 
 func hello(w http.ResponseWriter, req *http.Request) {
-	usersApp := users.New()
-	defer usersApp.Close()
 
-	err := usersApp.Run(req.Context(),
-		&users.YclientsRegistrationInitCmd{
-			ExtCompanyId: "",
-			Name:         "",
-			CompanyName:  "",
-			Email:        "",
-			PhoneNumber:  "",
-			UnsignedJSON: "",
-			Sign:         "",
-		})
+	// TODO: move up to main()
+
+	eventBus := eventbus.EventBus{}
+	usersDomain := users.New(&eventBus)
+
+	_, err := usersDomain.YclientsRegistrationAccept.Call(
+		req.Context(),
+		users.YclientsRegistrationAcceptInput{
+			SalonId:      "",
+			SalonName:    "",
+			UserName:     "",
+			UserEmail:    "",
+			UserPhone:    "",
+			UserData:     "",
+			UserDataSign: "",
+		},
+	)
 
 	fmt.Fprintf(w, "result: %v \n", err)
 }

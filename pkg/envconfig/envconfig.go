@@ -9,7 +9,7 @@ import (
 
 const appname = "SUPERADMIN"
 
-func Load(spec interface{}) {
+func Load(spec any) {
 	prefix := fmt.Sprintf("%s_", appname)
 
 	err := env.ParseWithOptions(spec, env.Options{

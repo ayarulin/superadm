@@ -1,9 +1,5 @@
 package core
 
-import (
-	"fmt"
-	"superadmin.ru/pkg/validators"
-)
 
 type ActiveIntegrationId int
 type AccountId int
@@ -26,11 +22,11 @@ func (n AccountId) Int32() int32 {
 }
 
 func NewExtCompanyId(s string) (ExtCompanyId, error) {
-	err := validators.String.IsNotBlank(s)
-
-	if err != nil {
-		return "", fmt.Errorf("ExtCompanyId: %v", err)
-	}
+	// err := validators.String.IsNotBlank(s)
+	//
+	// if err != nil {
+	// 	return "", fmt.Errorf("ExtCompanyId: %v", err)
+	// }
 
 	return ExtCompanyId(s), nil
 }
@@ -40,11 +36,11 @@ func (n ExtCompanyId) String() string {
 }
 
 func NewCompanyName(s string) (CompanyName, error) {
-	err := validators.String.IsNotBlank(s)
-
-	if err != nil {
-		return "", fmt.Errorf("CompanyName: %v", err)
-	}
+	// err := validators.String.IsNotBlank(s)
+	//
+	// if err != nil {
+	// 	return "", fmt.Errorf("CompanyName: %v", err)
+	// }
 
 	return CompanyName(s), nil
 }

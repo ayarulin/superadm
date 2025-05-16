@@ -5,7 +5,7 @@ import (
 
 	"github.com/lestrrat-go/jwx/v3/jwa"
 	"github.com/lestrrat-go/jwx/v3/jwt"
-	"superadmin.ru/users/internal/core"
+	"superadmin.ru/app/users/internal/core"
 )
 
 type JwtCoder struct {
@@ -38,6 +38,7 @@ func (j *JwtCoder) EncodeYclientsRegistration(reg *core.YclientsRegistration) (s
 
 	return string(signedToken), nil
 }
+
 
 func (j *JwtCoder) DecodeYclientsRegistration(signedString string) (*core.YclientsRegistration, error) {
   var (

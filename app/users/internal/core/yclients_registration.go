@@ -5,6 +5,7 @@ import (
 )
 
 type YclientsRegistration struct {
+	ID           int32
 	ExtCompanyId string `validate:"required"`
 	Name         string `validate:"required"`
 	CompanyName  string `validate:"required"`
@@ -19,6 +20,7 @@ func NewYclientsRegistration(
 	email string,
 	phoneNumber string,
 ) (*YclientsRegistration, error) {
+
 	model := YclientsRegistration{
 		ExtCompanyId: extCompanyId,
 		Name:         name,
@@ -33,4 +35,3 @@ func NewYclientsRegistration(
 
 	return &model, nil
 }
-

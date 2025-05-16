@@ -1,45 +1,46 @@
 package postgres
-// TODO: extract common logic to pkg/postgres
 
 import (
+	"context"
 	"database/sql"
-  "superadmin.ru/yclients/infrastructure/postgres/dao"
 	"log"
 
 	_ "github.com/lib/pq"
+	"superadmin.ru/infrastructure/postgres/dao"
 )
 
-type PostgresDB struct { 
-  ActiveIntegrations *activeIntegrations
-  closeFn func() error
+type DB struct {
+	*sql.DB
 }
 
-func Open(url string) *PostgresDB {
-  db, err := sql.Open("postgres", url)
+func Open(url string) *DB {
+	db, err := sql.Open("postgres", url)
 
-  queries := dao.New(db)
-   
-  if err == nil {
-    err = db.Ping()
-  }
+	if err == nil {
+		err = db.Ping()
+	}
 
-  if err != nil {
-    log.Fatal("Ошибка подключения к базе данных: ", err)
-  }
+	if err != nil {
+		log.Fatalf("Ошибка подключения к базе данных: %v", err)
+	}
 
-  db.SetMaxOpenConns(10)
-  db.SetMaxIdleConns(5)
-  db.SetConnMaxLifetime(0)
+	db.SetMaxOpenConns(10)
+	db.SetMaxIdleConns(5)
+	db.SetConnMaxLifetime(0)
 
-  log.Println("Connected to the database!")
+	log.Println("Connected to the database!")
 
-  return &PostgresDB{
-    closeFn: db.Close,
-    ActiveIntegrations: &activeIntegrations{queries},
-  }
+	return &DB{
+		db,
+	}
 }
 
-func (p *PostgresDB) Close() error {
-  return p.closeFn()
-}
+func (db *DB) Queries(ctx context.Context) *dao.Queries {
+	tx, ok := fromContext(ctx)
 
+	if ok {
+		return dao.New(tx)
+	}
+
+	return dao.New(db)
+}
