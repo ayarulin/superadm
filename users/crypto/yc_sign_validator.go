@@ -1,4 +1,4 @@
-package internal
+package crypto
 
 import  "superadmin.ru/pkg/crypto"
 

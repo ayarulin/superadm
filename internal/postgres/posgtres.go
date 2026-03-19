@@ -6,7 +6,7 @@ import (
 	"log"
 
 	_ "github.com/lib/pq"
-	"superadmin.ru/infrastructure/postgres/dao"
+	"superadmin.ru/internal/postgres/dao"
 )
 
 type DB struct {

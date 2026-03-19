@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"superadmin.ru/app/users"
-	"superadmin.ru/infrastructure/eventbus"
+	"superadmin.ru/users"
+	"superadmin.ru/internal/eventbus"
 )
 
 func main() {
@@ -22,6 +22,9 @@ func hello(w http.ResponseWriter, req *http.Request) {
 
 	eventBus := eventbus.EventBus{}
 	usersDomain := users.New(&eventBus)
+
+
+	users.New(&eventBus)
 
 	_, err := usersDomain.YclientsRegistrationAccept.Call(
 		req.Context(),

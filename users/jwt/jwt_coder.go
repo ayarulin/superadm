@@ -1,11 +1,11 @@
-package internal
+package jwt
 
 import (
 	"time"
 
 	"github.com/lestrrat-go/jwx/v3/jwa"
 	"github.com/lestrrat-go/jwx/v3/jwt"
-	"superadmin.ru/app/users/internal/core"
+	"superadmin.ru/internal/users/model"
 )
 
 type JwtCoder struct {
@@ -16,7 +16,7 @@ func NewJwtCoder(secret string) *JwtCoder {
 	return &JwtCoder{secret: []byte(secret)}
 }
 
-func (j *JwtCoder) EncodeYclientsRegistration(reg *core.YclientsRegistration) (string, error) {
+func (j *JwtCoder) EncodeYclientsRegistration(reg *model.YclientsRegistration) (string, error) {
 	token, err := jwt.NewBuilder().
 		Subject(reg.ExtCompanyId).
 		Claim("name", reg.Name).
@@ -39,15 +39,14 @@ func (j *JwtCoder) EncodeYclientsRegistration(reg *core.YclientsRegistration) (s
 	return string(signedToken), nil
 }
 
-
-func (j *JwtCoder) DecodeYclientsRegistration(signedString string) (*core.YclientsRegistration, error) {
-  var (
-    name string
-    company_id string
-    company_name string
-    email string
-    phone_number string
-  )
+func (j *JwtCoder) DecodeYclientsRegistration(signedString string) (*model.YclientsRegistration, error) {
+	var (
+		name         string
+		company_id   string
+		company_name string
+		email        string
+		phone_number string
+	)
 
 	token, err := jwt.ParseString(signedString, jwt.WithKey(jwa.HS256(), j.secret))
 
@@ -55,17 +54,17 @@ func (j *JwtCoder) DecodeYclientsRegistration(signedString string) (*core.Yclien
 		return nil, err
 	}
 
-  token.Get("subject", &company_id)
-  token.Get("name", &name)
-  token.Get("company_name", &company_name)
-  token.Get("email", &email)
-  token.Get("phone_number", &phone_number)
+	token.Get("subject", &company_id)
+	token.Get("name", &name)
+	token.Get("company_name", &company_name)
+	token.Get("email", &email)
+	token.Get("phone_number", &phone_number)
 
-	return core.NewYclientsRegistration(
+	return model.NewYclientsRegistration(
 		company_id,
-    name,
-    company_name,
-    email,
-    phone_number,
+		name,
+		company_name,
+		email,
+		phone_number,
 	)
 }

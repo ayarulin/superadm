@@ -1,13 +1,13 @@
-package users_test
+package commands_test
 
 import (
 	"context"
 	"os"
 	"testing"
 
-	"superadmin.ru/app/users"
-	"superadmin.ru/infrastructure/eventbus"
-	"superadmin.ru/pkg/crypto"
+	"superadmin.ru/internal/shared/crypto"
+	"superadmin.ru/users"
+	"superadmin.ru/users/commands"
 )
 
 func TestYclientsRegistrationInitCmd_SignCheck(t *testing.T) {
@@ -17,7 +17,8 @@ func TestYclientsRegistrationInitCmd_SignCheck(t *testing.T) {
 
 	err := usersDomain.YclientsRegistrationAcceptHandler.Call(
 		context.Background(),
-		users.YclientsRegistrationAcceptInput{
+
+		commands.YclientsRegistrationAcceptInput{
 			SalonID:      "Salon#1",
 			SalonName:    "Salon",
 			UserName:     "User#1",

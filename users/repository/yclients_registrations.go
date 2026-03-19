@@ -3,9 +3,9 @@ package repository
 import (
 	"context"
 
-	"superadmin.ru/app/users/internal/core"
-	"superadmin.ru/infrastructure/postgres"
-	"superadmin.ru/infrastructure/postgres/dao"
+	"superadmin.ru/users/model"
+	"superadmin.ru/internal/postgres"
+	"superadmin.ru/internal/postgres/dao"
 )
 
 type YclientsRegistrations struct {
@@ -18,7 +18,7 @@ func NewYclientsRegistrations(db *postgres.DB) *YclientsRegistrations {
 	}
 }
 
-func (r *YclientsRegistrations) Save(ctx context.Context, m *core.YclientsRegistration) error {
+func (r *YclientsRegistrations) Save(ctx context.Context, m *model.YclientsRegistration) error {
 	queries := r.db.Queries(ctx)
 
 	id, err := queries.CreateActiveIntegration(ctx,
